@@ -1,0 +1,21 @@
+[project]
+name = "mcp-savings"
+version = "0.1.0"
+description = "Custom MCP server on Databricks Apps: account details and savings forecasts"
+requires-python = ">=3.11"
+dependencies = [
+    "databricks-sdk>=0.50.0",
+    "fastapi>=0.115.0",
+    "fastmcp>=2.10.0",
+    "uvicorn>=0.30.0",
+]
+
+[project.scripts]
+custom-server = "server.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["server"]

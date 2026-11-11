@@ -1,0 +1,33 @@
+bundle:
+  name: mcp-savings
+
+sync:
+  exclude:
+    - uv.lock
+
+resources:
+  apps:
+    mcp_savings:
+      name: mcp-savings
+      description: "MCP server exposing account details and savings forecasts"
+      source_code_path: .
+      resources:
+        - name: pip-index-url
+          secret:
+            scope: databricks-package-management
+            key: pip-index-url
+            permission: READ
+        - name: pip-extra-index-urls
+          secret:
+            scope: databricks-package-management
+            key: pip-extra-index-urls
+            permission: READ
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      profile: default # CLI profile for the development workspace - replace with your own if needed
+  prod:
+    mode: production

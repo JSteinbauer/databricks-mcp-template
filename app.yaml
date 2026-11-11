@@ -1,0 +1,7 @@
+command: ["uv", "run", "custom-server"]
+env:
+  # uv ignores PIP_* vars; pypi.org is not reachable from the app
+  - name: UV_DEFAULT_INDEX
+    valueFrom: pip-index-url
+  - name: UV_EXTRA_INDEX_URL
+    valueFrom: pip-extra-index-urls
