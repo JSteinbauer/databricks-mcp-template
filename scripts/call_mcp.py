@@ -1,4 +1,4 @@
-"""Call the mcp-savings server with an MCP client.
+"""Call the mcp-server-template server with an MCP client.
 
 Local:     uv run python scripts/call_mcp.py
 Deployed:  uv run python scripts/call_mcp.py --url https://<app-url>/mcp

@@ -1,5 +1,5 @@
 [project]
-name = "mcp-savings"
+name = "mcp-server-template"
 version = "0.1.0"
 description = "Custom MCP server on Databricks Apps: account details and savings forecasts"
 requires-python = ">=3.11"

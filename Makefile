@@ -21,4 +21,4 @@ inspector:
 deploy:
 	databricks auth login --profile $(PROFILE)
 	databricks bundle deploy -t $(TARGET)
-	databricks bundle run mcp_savings -t $(TARGET)
+	databricks bundle run mcp_server_template -t $(TARGET)

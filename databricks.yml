@@ -1,5 +1,5 @@
 bundle:
-  name: mcp-savings
+  name: mcp-server-template
 
 sync:
   exclude:
@@ -7,9 +7,9 @@ sync:
 
 resources:
   apps:
-    mcp_savings:
-      name: mcp-savings
-      description: "MCP server exposing account details and savings forecasts"
+    mcp_server_template:
+      name: mcp-server-template
+      description: "MCP template with dummy tools to  exposing account details and savings forecasts"
       source_code_path: .
       resources:
         - name: pip-index-url
