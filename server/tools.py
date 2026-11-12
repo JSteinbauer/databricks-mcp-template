@@ -8,6 +8,7 @@ ACCOUNTS: dict[str, dict] = {
     "sp3cb@s-mxs.net": {"account_id": "ACC-1001", "currency": "EUR", "current_balance": 2.23},
     "bob@example.com": {"account_id": "ACC-1002", "currency": "EUR", "current_balance": 3_200.50},
     "carol@example.com": {"account_id": "ACC-1003", "currency": "EUR", "current_balance": 48_000.00},
+    "0e2c9d75-15da-4465-829d-b94306ded864": {"account_id": "ACC-1004", "currency": "USD", "current_balance": 5000.00},
 }
 
 
