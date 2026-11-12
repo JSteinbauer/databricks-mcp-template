@@ -4,7 +4,7 @@ PROFILE ?= default
 
 export DATABRICKS_CONFIG_PROFILE := $(PROFILE)
 
-.PHONY: install run client inspector deploy start
+.PHONY: install run client list-tools inspector deploy start
 
 install:
 	uv sync
@@ -15,8 +15,8 @@ run: install
 client:
 	uv run python scripts/call_mcp.py --url $(MCP_URL)
 
-inspector:
-	npx @modelcontextprotocol/inspector
+list-tools:
+	uv run python scripts/list_tools.py --url $(MCP_URL)
 
 deploy:
 	databricks auth login --profile $(PROFILE)
