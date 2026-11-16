@@ -88,27 +88,67 @@ The MCP endpoint is then available at `https://<app-host>/mcp`.
 
 ## Connecting clients
 
-**VS Code / other stdio clients** — Databricks Apps require short-lived Databricks OAuth tokens,
-so use the stdio proxy, which refreshes tokens via the Databricks SDK. Example `.vscode/mcp.json`:
+### VS Code GitHub Copilot (via the stdio proxy)
 
-```json
-{
-  "servers": {
-    "databricks-mcp": {
-      "type": "stdio",
-      "command": "uv",
-      "args": [
-        "run", "--project", "/path/to/databricks-mcp-template",
-        "python", "scripts/mcp_stdio_proxy.py",
-        "--url", "https://<app-host>/mcp",
-        "--host", "https://<workspace-host>"
-      ]
-    }
-  }
-}
-```
+Databricks Apps only accept Databricks OAuth (U2M) tokens, and those **expire after about an hour**.
+If you register the app as an `http` MCP server in VS Code with a fixed
+`Authorization: Bearer <token>` header, Copilot stops working once the token expires and you
+have to paste in a new token by hand.
 
-Run `databricks auth login --host https://<workspace-host>` once beforehand.
+[scripts/mcp_stdio_proxy.py](scripts/mcp_stdio_proxy.py) avoids this. **You need it if you want
+automatic reauthentication.** Copilot starts the proxy as a local `stdio` MCP server. The proxy then:
+
+- gets a token from the Databricks SDK (Databricks CLI token cache or a configured profile) for
+  every request, and the SDK refreshes it automatically when it expires,
+- forwards each JSON-RPC message to the app's `/mcp` endpoint and relays the response (JSON or SSE)
+  back to Copilot,
+- opens a new MCP session and retries the request if the server has dropped the session
+  (for example, after an app restart or redeploy).
+
+**Setup**
+
+1. Log in to the workspace once. This creates the refresh token that the proxy reuses:
+
+   ```bash
+   databricks auth login --host https://<workspace-host>
+   # or: databricks auth login --profile <profile>
+   ```
+
+2. Add the server to `.vscode/mcp.json` in your workspace, or to your user `mcp.json` via
+   *MCP: Open User Configuration*:
+
+   ```json
+   {
+     "servers": {
+       "databricks-mcp": {
+         "type": "stdio",
+         "command": "uv",
+         "args": [
+           "run", "--project", "/path/to/databricks-mcp-template",
+           "python", "/path/to/databricks-mcp-template/scripts/mcp_stdio_proxy.py",
+           "--url", "https://<app-host>/mcp",
+           "--host", "https://<workspace-host>"
+         ]
+       }
+     }
+   }
+   ```
+
+   Use absolute paths, because VS Code may start the process from a different working directory.
+   To use a CLI profile instead of `--host`, pass `"--profile", "<profile>"`. You can also set
+   `DATABRICKS_HOST` / `DATABRICKS_CONFIG_PROFILE` through an `"env"` block.
+
+3. Start the server: run *MCP: List Servers*, select `databricks-mcp`, and choose *Start*. Or click
+   *Start* above the entry in `mcp.json`. Then open Copilot Chat in **Agent** mode and enable the
+   tools in the tool picker.
+
+**Troubleshooting** — the proxy writes its logs to stderr, prefixed with `[mcp-proxy]`. To see
+them, run *MCP: List Servers* → `databricks-mcp` → *Show Output*. On startup it logs the
+`auth_type` and `host` it resolved. HTTP `401`/`403` errors usually mean the CLI login has expired
+or is for a different workspace. Run `databricks auth login` again to fix this. You don't need to
+restart VS Code.
+
+Other stdio-based MCP clients, such as Claude Desktop and Cursor, can use the same command and arguments.
 
 **Notebooks** — see [notebooks/](notebooks/) for direct client usage and agent examples
 (hand-wired loop and OpenAI Agents SDK).
