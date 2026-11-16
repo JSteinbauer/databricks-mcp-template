@@ -43,14 +43,12 @@ Demo accounts are keyed by Databricks user name in `ACCOUNTS` in [server/tools.p
 - [uv](https://docs.astral.sh/uv/)
 - [Databricks CLI](https://docs.databricks.com/dev-tools/cli/) authenticated against your workspace
   (`databricks auth login --profile <profile>`)
-- Node.js (only for the MCP Inspector)
 
 ## Local development
 
 ```bash
 make run                  # install deps and start the server on http://localhost:8000
 make list-tools           # in a second terminal: list tools of the local server
-make inspector            # optional: open the MCP Inspector UI
 ```
 
 Locally, tools authenticate with your Databricks CLI profile (`PROFILE`, default `default`,
